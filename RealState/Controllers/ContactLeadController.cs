@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RealState.Abstactions;
+using RealState.Abstactions.Consts;
 using RealState.Contracts.ContactLead;
 using RealState.Services;
 
@@ -10,13 +12,15 @@ namespace RealState.Controllers
     [ApiController]
     public class ContactLeadController(IContactLeadService _contactLeadService) : ControllerBase
     {
+
+
         [HttpPost("Add")]
         public async Task<IActionResult> AddContactLead([FromBody] ContactLeadRequest request)
         {
             var result = await _contactLeadService.AddContactLead(request);
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
-
+        [Authorize(Roles = DefaultRoles.Admin)]
         [HttpPost("Assign")]
         public async Task<IActionResult> AssignToEmployee([FromQuery] int id, [FromQuery] string employeeId)
         {

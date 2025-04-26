@@ -39,6 +39,7 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IPropertyService, PropertyService>();
         services.AddScoped<IContactLeadService, ContactLeadService>();
+        services.AddScoped<ILaunchService, LaunchService>();
         services.AddScoped<IEmailSender, EmailService>();
         services.AddScoped<IFileService, FileService>();
         services.Configure<MailSettings>(config.GetSection(nameof(MailSettings)));
@@ -136,7 +137,7 @@ public static class DependencyInjection
         {
             options.Password.RequiredLength = 8;
             options.Password.RequireNonAlphanumeric = false;
-            options.SignIn.RequireConfirmedEmail = true;
+            options.SignIn.RequireConfirmedEmail = false;
             options.User.RequireUniqueEmail = true;
 
         });

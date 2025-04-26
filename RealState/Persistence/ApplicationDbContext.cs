@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using RealState.Entities;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Reflection;
-using RealState.Entities.PropertForSell;
 using RealState.Entities.PropertForRent;
 
 namespace RealState.Persistence;
@@ -25,6 +24,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<PropertForRent>  propertForRents { get; set; }
     public DbSet<ContactLeads>   contactLeads { get; set; }
     public DbSet<UploadedFile>   uploadedFiles { get; set; }
+    public DbSet<Launch>  launches { get; set; }
 
     //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     //{

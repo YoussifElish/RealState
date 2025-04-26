@@ -1,6 +1,6 @@
 ﻿
 
-namespace RealState.Entities.PropertForSell
+namespace RealState.Entities
 {
 
     public enum PropertySellType
@@ -43,6 +43,10 @@ namespace RealState.Entities.PropertForSell
 
 
         public bool IsAvailable { get; set; } 
+
+        public Launch? Launch { get; set; }
+        public int? LaunchId { get; set; }
+        public string ContactNumber { get; set; }
 
 
     }

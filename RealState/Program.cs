@@ -1,6 +1,9 @@
 using Hangfire;
 using RealState;
 using Hangfire.Dashboard.BasicAuthorization;
+using CureFusion.Persistence.EntitiesConfiguration;
+using Microsoft.AspNetCore.Identity;
+using RealState.Entities;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,13 +17,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDependencies(builder.Configuration);
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+    await RoleSeeder.SeedRolesAsync(roleManager);
 }
+// Configure the HTTP request pipeline.
+
+app.UseSwagger();
+    app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 app.UseHangfireDashboard("/jobs", new DashboardOptions

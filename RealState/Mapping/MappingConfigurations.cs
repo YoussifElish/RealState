@@ -2,7 +2,6 @@
 using RealState.Contracts.Property;
 using RealState.Entities;
 using RealState.Entities.PropertForRent;
-using RealState.Entities.PropertForSell;
 
 
 namespace RealState.Mapping

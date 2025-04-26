@@ -15,4 +15,7 @@ public class PropertyForRentRequest
     public DateTime LeaseEndDate { get; set; }
     public RentType RentType { get; set; }
     public decimal DepositAmount { get; set; }
+    public string ContactNumber { get; set; }
+
+
 }

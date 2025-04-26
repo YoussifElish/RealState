@@ -1,4 +1,5 @@
-﻿using RealState.Entities.PropertForSell;
+﻿
+using RealState.Entities;
 
 namespace RealState.Contracts.Property;
 
@@ -12,4 +13,8 @@ public class PropertyForSellRequest
     public int NumberOfRooms { get; set; }
     public Condition Condition { get; set; }
     public bool IsAvailable { get; set; }
+    public int? LaunchId { get; set; }
+    public string ContactNumber { get; set; }
+
+
 }

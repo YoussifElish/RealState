@@ -43,6 +43,9 @@ public class PropertForRent
 
     public RentType RentType { get; set; } 
 
-    public decimal? DepositAmount { get; set; } 
+    public decimal? DepositAmount { get; set; }
+
+    public string ContactNumber { get; set; }
+
 
 }

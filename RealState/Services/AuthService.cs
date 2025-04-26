@@ -71,15 +71,12 @@ public class AuthService(IHttpContextAccessor httpContextAccessor, UserManager<A
         if (emailIsExist)
             return Result.Failure(AuthErrors.DuplicatedEmail);
         var user = request.Adapt<ApplicationUser>();
-        user.EmailConfirmed = false;
+        user.EmailConfirmed = true;
         var result = await _userManager.CreateAsync(user, request.Password);
 
         if (result.Succeeded)
         {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            _logger.LogInformation("Confirmation Code: {Code}", code);
-            await SendConfimartionEmail(user, code);
+           
 
 
             return Result.Success();
@@ -112,93 +109,57 @@ public class AuthService(IHttpContextAccessor httpContextAccessor, UserManager<A
         await _userManager.UpdateAsync(user);
         return Result.Success();
     }
-    public async Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request)
-    {
-        if (await _userManager.FindByIdAsync(request.UserId) is not { } user)
-            return Result.Failure(AuthErrors.InvalidCode);
-
-        if (user.EmailConfirmed)
-            return Result.Failure(AuthErrors.DuplicatedConfirmation);
 
 
-        var code = request.Code;
-        try
-        {
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
 
-        }
-        catch (FormatException)
-        {
-            return Result.Failure(AuthErrors.InvalidCode);
-        }
-        var result = await _userManager.ConfirmEmailAsync(user, code);
-        if (result.Succeeded)
-        {
-            await _userManager.AddToRoleAsync(user, DefaultRoles.Member);
-            return Result.Success();
-        }
-        var error = result.Errors.First();
-        return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
-
-    }
-
-    public async Task<Result> ResendConfirmEmailAsync(Contracts.Authentication.ResendConfirmationEmailRequest request)
-    {
-        if (await _userManager.FindByEmailAsync(request.Email) is not { } user)
-            return Result.Success();
-
-        if (user.EmailConfirmed)
-            return Result.Failure(AuthErrors.DuplicatedConfirmation);
-
-
-        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        _logger.LogInformation("Confirmation Code: {Code}", code);
-        await SendConfimartionEmail(user, code);
-
-
-        return Result.Success();
-
-    }
 
     public async Task<Result> SentResetPasswordCodeAsync(string email)
     {
         if (await _userManager.FindByEmailAsync(email) is not { } user)
             return Result.Success();
+
         if (!user.EmailConfirmed)
             return Result.Failure(AuthErrors.EmailNotConfirmed);
 
-        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        _logger.LogInformation("Reset Code: {Code}", code);
-        await SendResetPasswordEmail(user, code);
-        return Result.Success();
+        var random = new Random();
+        var code = random.Next(100000, 999999).ToString();
 
+        user.ResetPasswordCode = code;
+        user.ResetPasswordCodeExpiration = DateTime.UtcNow.AddMinutes(10); 
+
+        await _userManager.UpdateAsync(user);
+
+        _logger.LogInformation("Reset Code: {Code}", code);
+
+        await SendResetPasswordEmail(user, code);
+
+        return Result.Success();
     }
+
     public async Task<Result> ResetPasswordAsync(Contracts.Authentication.ResetPasswordRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user is null || !user.EmailConfirmed)
             return Result.Failure(AuthErrors.InvalidCode);
-        IdentityResult result;
-        try
-        {
-            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
-            result = await _userManager.ResetPasswordAsync(user, code, request.NewPassword);
 
-        }
-        catch (FormatException)
-        {
-            result = IdentityResult.Failed(_userManager.ErrorDescriber.InvalidToken());
-        }
+        if (user.ResetPasswordCode != request.Code || user.ResetPasswordCodeExpiration < DateTime.UtcNow)
+            return Result.Failure(AuthErrors.InvalidCode);
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
 
         if (result.Succeeded)
+        {
+            user.ResetPasswordCode = null;
+            user.ResetPasswordCodeExpiration = null;
+            await _userManager.UpdateAsync(user);
             return Result.Success();
+        }
+
         var error = result.Errors.First();
-        return Result.Failure(new(error.Code, error.Description, StatusCodes.Status401Unauthorized));
-
-
+        return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status401Unauthorized));
     }
+
 
 
 
@@ -242,31 +203,19 @@ public class AuthService(IHttpContextAccessor httpContextAccessor, UserManager<A
     }
     private async Task SendResetPasswordEmail(ApplicationUser user, string code)
     {
-        var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+       
         var emailBody = EmailBodyBuider.GenerateEmailBody("ForgetPassword", new Dictionary<string, string>
                 {
                     {"{{Product_Name}}",user.FirstName},
                     {"{{name}}",user.FirstName},
-                    {"{{action_url}}",$"{origin}/auth/forgetPassword?Email={user.Email}&code={code}"}
+                    {"{{action_url}}",$"{code}"}
                 });
-        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅CureFusion: Reset Password", emailBody));
+        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅House Hub: Reset Password", emailBody));
 
         await Task.CompletedTask;
 
     }
-    private async Task SendConfimartionEmail(ApplicationUser user, string code)
-    {
-        var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
-        var emailBody = EmailBodyBuider.GenerateEmailBody("EmailConfirmation", new Dictionary<string, string>
-        {
-            {"{{name}}", user.FirstName},
-            {"{{action_url}}", $"{origin}/auth/emailConfirmation?userId={user.Id}&code={code}"}
-        });
 
-        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅CureFusion: Email Confirmation", emailBody));
-
-        await Task.CompletedTask;
-    }
     private async Task<(IEnumerable<string> roles, IEnumerable<string> permissions)> GetUserRolesAndPermissions(ApplicationUser user, CancellationToken cancellationToken)
     {
         var userRoles = await _userManager.GetRolesAsync(user);

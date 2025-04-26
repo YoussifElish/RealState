@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using RealState.Abstactions;
 using RealState.Api.Contracts;
 using RealState.Contracts.Property;
+using RealState.Entities;
 using RealState.Entities.PropertForRent;
-using RealState.Entities.PropertForSell;
 using RealState.Errors;
 using RealState.Persistence;
 
@@ -24,7 +24,7 @@ public class PropertyService(ApplicationDbContext context,IFileService fileServi
         _context.propertForSells.Add(property);
 
         await _context.SaveChangesAsync();
-        await _fileService.UploadManyAsync(uploadImageRequest.Image, property.Id, "Sell");
+        await _fileService.UploadManyAsync(uploadImageRequest.Image, property.Id, "Sell","Sell Prop");
 
         var result = property.Adapt<PropertyForSellResponse>();
         var images = await _context.uploadedFiles
@@ -44,6 +44,7 @@ public class PropertyService(ApplicationDbContext context,IFileService fileServi
 
         _context.propertForRents.Add(property);
         await _context.SaveChangesAsync();
+        await _fileService.UploadManyAsync(uploadImageRequest.Image, property.Id, "Rent", "Sell Rent");
 
         var result = property.Adapt<PropertyForRentResponse>();
         var images = await _context.uploadedFiles
@@ -192,7 +193,7 @@ public class PropertyService(ApplicationDbContext context,IFileService fileServi
             _context.uploadedFiles.RemoveRange(oldImages);
 
 
-            await _fileService.UploadManyAsync(uploadImageRequest.Image, property.Id, "Sell");
+            await _fileService.UploadManyAsync(uploadImageRequest.Image, property.Id, "Sell", "Sell Prop");
         }
 
 
@@ -226,7 +227,7 @@ public class PropertyService(ApplicationDbContext context,IFileService fileServi
                 .ToListAsync();
             _context.uploadedFiles.RemoveRange(oldImages);
 
-            await _fileService.UploadManyAsync(uploadImageRequest.Image, property.Id, "Rent");
+            await _fileService.UploadManyAsync(uploadImageRequest.Image, property.Id, "Rent", "Rent Prop");
         }
 
         _context.propertForRents.Update(property);

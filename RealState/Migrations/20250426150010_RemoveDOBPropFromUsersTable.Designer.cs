@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RealState.Persistence;
 
@@ -11,9 +12,11 @@ using RealState.Persistence;
 namespace RealState.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426150010_RemoveDOBPropFromUsersTable")]
+    partial class RemoveDOBPropFromUsersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,6 +169,26 @@ namespace RealState.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "aa6f1471-6662-4a6e-97b9-d27745585bda",
+                            ConcurrencyStamp = "8c841d4d-5a09-42a9-b6ff-9d7f362f5477",
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "46235578-03e2-43cf-9344-6a0c7b20925d",
+                            ConcurrencyStamp = "d7aaa1d4-a150-4044-b84c-2c59417140f7",
+                            IsDefault = true,
+                            IsDeleted = false,
+                            Name = "Member",
+                            NormalizedName = "MEMBER"
+                        });
                 });
 
             modelBuilder.Entity("RealState.Entities.ApplicationUser", b =>
@@ -227,12 +250,6 @@ namespace RealState.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ResetPasswordCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ResetPasswordCodeExpiration")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -269,7 +286,7 @@ namespace RealState.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@REALSTATE.COM",
                             NormalizedUserName = "ADMIN@REALSTATE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKmjjDlpuiO4wMqr621knEFbBLYs2aE5B4W0rTL58FE9ovPNoh63/evPn+eI6epeCg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELsr5HYY+j5KiVWue9+5x/RL7cBK6SN3Z2PecC8Xe4m+vNPZjTB5B6Az3+E5JRl7QA==",
                             PhoneNumber = "000000",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "07DB2EDBB86447CA8B2EC4E293AE89F5",
@@ -315,27 +332,6 @@ namespace RealState.Migrations
                     b.ToTable("contactLeads");
                 });
 
-            modelBuilder.Entity("RealState.Entities.Launch", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("launches");
-                });
-
             modelBuilder.Entity("RealState.Entities.PropertForRent.PropertForRent", b =>
                 {
                     b.Property<int>("Id")
@@ -343,10 +339,6 @@ namespace RealState.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateListed")
                         .HasColumnType("datetime2");
@@ -392,7 +384,7 @@ namespace RealState.Migrations
                     b.ToTable("propertForRents");
                 });
 
-            modelBuilder.Entity("RealState.Entities.PropertForSell", b =>
+            modelBuilder.Entity("RealState.Entities.PropertForSell.PropertForSell", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -403,10 +395,6 @@ namespace RealState.Migrations
                     b.Property<int>("Condition")
                         .HasColumnType("int");
 
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateListed")
                         .HasColumnType("datetime2");
 
@@ -416,9 +404,6 @@ namespace RealState.Migrations
 
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("LaunchId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -439,8 +424,6 @@ namespace RealState.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LaunchId");
-
                     b.ToTable("propertForSells");
                 });
 
@@ -451,10 +434,6 @@ namespace RealState.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -577,20 +556,6 @@ namespace RealState.Migrations
                         .HasForeignKey("ApplicationUserId");
 
                     b.Navigation("ApplicationUser");
-                });
-
-            modelBuilder.Entity("RealState.Entities.PropertForSell", b =>
-                {
-                    b.HasOne("RealState.Entities.Launch", "Launch")
-                        .WithMany("propertForSells")
-                        .HasForeignKey("LaunchId");
-
-                    b.Navigation("Launch");
-                });
-
-            modelBuilder.Entity("RealState.Entities.Launch", b =>
-                {
-                    b.Navigation("propertForSells");
                 });
 #pragma warning restore 612, 618
         }

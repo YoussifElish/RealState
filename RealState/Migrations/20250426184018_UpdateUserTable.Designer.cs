@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RealState.Persistence;
 
@@ -11,9 +12,11 @@ using RealState.Persistence;
 namespace RealState.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426184018_UpdateUserTable")]
+    partial class UpdateUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,7 +272,7 @@ namespace RealState.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@REALSTATE.COM",
                             NormalizedUserName = "ADMIN@REALSTATE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKmjjDlpuiO4wMqr621knEFbBLYs2aE5B4W0rTL58FE9ovPNoh63/evPn+eI6epeCg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEWsY8suZXHx2Qlaz8+NAIHdqUlmpyrEU5POooZdRXyXEuOgkcH652yVxbvmMzJCHQ==",
                             PhoneNumber = "000000",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "07DB2EDBB86447CA8B2EC4E293AE89F5",
@@ -344,10 +347,6 @@ namespace RealState.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateListed")
                         .HasColumnType("datetime2");
 
@@ -403,10 +402,6 @@ namespace RealState.Migrations
                     b.Property<int>("Condition")
                         .HasColumnType("int");
 
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateListed")
                         .HasColumnType("datetime2");
 
@@ -451,10 +446,6 @@ namespace RealState.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

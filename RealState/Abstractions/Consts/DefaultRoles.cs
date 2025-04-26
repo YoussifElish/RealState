@@ -10,6 +10,9 @@
         public const string MemberRoleId = "46235578-03e2-43cf-9344-6a0c7b20925d";
         public const string MemberRoleConcurrenyStamp = "d7aaa1d4-a150-4044-b84c-2c59417140f7";
 
-      
+
+        public const string Employee = nameof(Employee);
+        public const string EmployeeRoleId = "46274568-03e2-43cf-9344-6a0c7b20925d";
+        public const string EmployeeRoleConcurrenyStamp = "d7b201d4-a150-4044-b84c-2c59417140f7";
     }
 }

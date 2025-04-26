@@ -1,16 +1,20 @@
 ﻿using Mapster;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RealState.Abstactions;
 using RealState.Contracts.ContactLead;
 using RealState.Entities;
 using RealState.Errors;
 using RealState.Persistence;
+using System.Security.Claims;
 
 namespace RealState.Services;
 
-public class ContactLeadService(ApplicationDbContext context) : IContactLeadService
+public class ContactLeadService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager) : IContactLeadService
 {
     private readonly ApplicationDbContext _context = context;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     public async Task<Result> AddContactLead(ContactLeadRequest request, CancellationToken cancellationToken = default)
     {
@@ -22,9 +26,17 @@ public class ContactLeadService(ApplicationDbContext context) : IContactLeadServ
 
     public async Task<Result<ContactLeadResponse>> AssignToEmployee(int id, string employeeId, CancellationToken cancellationToken = default)
     {
+
+        var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var user = await _userManager.FindByIdAsync(userId);
+        var userRoles = await _userManager.GetRolesAsync(user);
+        if (!userRoles.Contains("Admin"))
+            return Result.Failure<ContactLeadResponse>(LeadErrors.NotAuthorizedToAssignLead);
         var lead = await _context.contactLeads.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         if (lead is null)
             return Result.Failure<ContactLeadResponse>(LeadErrors.LeadNotFound);
+
 
         var employee = await _context.Users.FirstOrDefaultAsync(u => u.Id == employeeId, cancellationToken);
         if (employee is null)
@@ -76,9 +88,21 @@ public class ContactLeadService(ApplicationDbContext context) : IContactLeadServ
 
     public async Task<Result<ContactLeadResponse>> MarkAsDone(int id, CancellationToken cancellationToken = default)
     {
+
+
         var lead = await _context.contactLeads.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         if (lead is null)
             return Result.Failure<ContactLeadResponse>(LeadErrors.LeadNotFound);
+
+        var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (lead.ApplicationUserId != userId)
+        {
+            var userRoles = await _userManager.GetRolesAsync(user);
+            if (!userRoles.Contains("Admin"))
+                return Result.Failure<ContactLeadResponse>(LeadErrors.NotAuthorizedToMarkAsDone);
+        }
 
         lead.IsDone = true;
         _context.contactLeads.Update(lead);

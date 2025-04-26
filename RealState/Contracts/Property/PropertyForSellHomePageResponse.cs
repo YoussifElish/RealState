@@ -8,4 +8,6 @@ public class PropertyForSellHomePageResponse
         public decimal Price { get; set; }
         public string Location { get; set; }
         public List<string> Images { get; set; }
+    public string ContactNumber { get; set; }
+
 }
