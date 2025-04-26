@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RealState.Abstactions;
+using RealState.Abstactions.Consts;
 using RealState.Contracts.ContactLead;
 using RealState.Entities;
 using RealState.Errors;
@@ -54,11 +55,25 @@ public class ContactLeadService(ApplicationDbContext context, IHttpContextAccess
 
     public async Task<Result<List<ContactLeadResponse>>> GetAllContactLead(CancellationToken cancellationToken = default)
     {
-        var leads = await _context.contactLeads
-            .Include(c => c.ApplicationUser)
-            .ToListAsync(cancellationToken);
+        var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+        var user = await _userManager.FindByIdAsync(userId);
+     
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        IQueryable<ContactLeads> query = _context.contactLeads.Include(c => c.ApplicationUser);
+
+        if (!userRoles.Contains(DefaultRoles.Admin))
+        {
+            query = query.Where(c => c.ApplicationUserId == userId);
+        }
+
+        var leads = await query.ToListAsync(cancellationToken);
 
         var response = leads.Adapt<List<ContactLeadResponse>>();
+
         for (int i = 0; i < leads.Count; i++)
         {
             response[i].Name = leads[i].ApplicationUser is not null
@@ -71,12 +86,29 @@ public class ContactLeadService(ApplicationDbContext context, IHttpContextAccess
 
     public async Task<Result<ContactLeadResponse>> GetContactLead(int id, CancellationToken cancellationToken = default)
     {
+        var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var user = await _userManager.FindByIdAsync(userId);
+   
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+
         var lead = await _context.contactLeads
             .Include(c => c.ApplicationUser)
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
         if (lead is null)
             return Result.Failure<ContactLeadResponse>(LeadErrors.LeadNotFound);
+
+        // تحقق من الصلاحيات بناءً على الدور
+        if (!userRoles.Contains(DefaultRoles.Admin))
+        {
+            // لو مش Admin
+            if (lead.ApplicationUserId != userId)
+            {
+                return Result.Failure<ContactLeadResponse>(LeadErrors.NotAuthorizedToAccessLead);
+            }
+        }
 
         var response = lead.Adapt<ContactLeadResponse>();
         response.Name = lead.ApplicationUser is not null
@@ -85,6 +117,8 @@ public class ContactLeadService(ApplicationDbContext context, IHttpContextAccess
 
         return Result.Success(response);
     }
+
+
 
     public async Task<Result<ContactLeadResponse>> MarkAsDone(int id, CancellationToken cancellationToken = default)
     {

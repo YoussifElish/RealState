@@ -15,6 +15,12 @@ public static class LeadErrors
            "Not Authorized To Assign Lead",
            StatusCodes.Status400BadRequest
        );  
+    
+    public static readonly Error NotAuthorizedToAccessLead = new(
+           "Lead.NotAuthorizedToAccessLead",
+           "Not Authorized To Access This Lead",
+           StatusCodes.Status400BadRequest
+       );  
     public static readonly Error NotAuthorizedToMarkAsDone = new(
            "Lead.NotAuthorizedToMarkAsDone",
            "Not Authorized To Mark As Done You Must Be assigned to lead or admin",

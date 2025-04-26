@@ -27,13 +27,14 @@ namespace RealState.Controllers
             var result = await _contactLeadService.AssignToEmployee(id, employeeId);
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
-
+        [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.Employee}")]
         [HttpGet("All")]
         public async Task<IActionResult> GetAllContactLead()
         {
             var result = await _contactLeadService.GetAllContactLead();
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
+        [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.Employee}")]
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContactLead(int id)
@@ -41,6 +42,7 @@ namespace RealState.Controllers
             var result = await _contactLeadService.GetContactLead(id);
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
+        [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.Employee}")]
 
         [HttpPut("MarkAsDone/{id}")]
         public async Task<IActionResult> MarkAsDone(int id)

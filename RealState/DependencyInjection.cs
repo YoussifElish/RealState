@@ -41,6 +41,8 @@ public static class DependencyInjection
         services.AddScoped<IContactLeadService, ContactLeadService>();
         services.AddScoped<ILaunchService, LaunchService>();
         services.AddScoped<IEmailSender, EmailService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IFileService, FileService>();
         services.Configure<MailSettings>(config.GetSection(nameof(MailSettings)));
 

@@ -1,0 +1,42 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using RealState.Abstactions;
+using RealState.Contracts.Users;
+using RealState.Extensions;
+using RealState.Services;
+
+namespace RealState.Controllers
+{
+    [Route("me")]
+    [ApiController]
+    [Authorize]
+    public class AccountController(IUserService userService) : ControllerBase
+    {
+        private readonly IUserService _userService = userService;
+
+
+        [HttpGet("")]
+        public async Task<IActionResult> Info()
+        {
+            var result = await _userService.GetProfileAsync(User.GetUserId()!);
+            return Ok(result.Value);
+        }
+
+
+        [HttpPut("info")]
+        public async Task<IActionResult> Info([FromBody] UpdateProfileRequest request)
+        {
+            var result = await _userService.UpdateProfileAsync(User.GetUserId()!, request);
+            return NoContent();
+        }
+
+
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var result = await _userService.UpdatePasswordAsync(User.GetUserId()!, request);
+            return result.IsSuccess ? Ok() : result.ToProblem();
+        }
+    }
+}
