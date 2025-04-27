@@ -14,5 +14,6 @@ namespace RealState.Services
         Task<Result> UpdateAsync(string id, UpdateUserRequest request, CancellationToken cancellationToken = default);
         Task<Result> ToggleStatusAsync(string id, CancellationToken cancellationToken = default);
         Task<Result> UnlockAsync(string id, CancellationToken cancellationToken = default);
+        Task<Result> AddRoleToUserAsync(string userId, string roleName, CancellationToken cancellationToken = default);
     }
 }

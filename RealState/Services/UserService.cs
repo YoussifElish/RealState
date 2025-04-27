@@ -154,5 +154,22 @@ namespace RealState.Services
             var error = result.Errors.First();
             return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
+
+        public async Task<Result> AddRoleToUserAsync(string userId, string roleName, CancellationToken cancellationToken = default)
+        {
+            if (await _userManager.FindByIdAsync(userId) is not { } user)
+                return Result.Failure(UserErrors.NotFound);
+
+            var allowedRoles = await _roleService.GetAllAsync(cancellationToken: cancellationToken);
+            if (!allowedRoles.Any(r => r.Name == roleName))
+                return Result.Failure(RoleErrors.InvalidPermissions);
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (result.Succeeded)
+                return Result.Success();
+
+            var error = result.Errors.First();
+            return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+        }
     }
 }

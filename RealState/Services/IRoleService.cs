@@ -1,7 +1,7 @@
 ﻿using RealState.Abstactions;
 using RealState.Contracts.Roles;
 
-namespace SurveyBasket.Services
+namespace RealState.Services
 {
     public interface IRoleService
     {

@@ -45,7 +45,14 @@ namespace RealState.Controllers
             return result.IsSuccess ? NoContent() : result.ToProblem();
         }
 
-      
+        [HttpPost("{id}/add-role")]
+        [Authorize(Roles = DefaultRoles.Admin)]
+        public async Task<IActionResult> AddRoleToUser([FromBody] AddRoleToUserRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _userService.AddRoleToUserAsync(request.UserId, request.RoleName, cancellationToken);
+            return result.IsSuccess ? NoContent() : result.ToProblem();
+        }
+
 
     }
 }

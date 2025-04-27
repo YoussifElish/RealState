@@ -76,8 +76,7 @@ public class AuthService(IHttpContextAccessor httpContextAccessor, UserManager<A
 
         if (result.Succeeded)
         {
-           
-
+            await _userManager.AddToRoleAsync(user, DefaultRoles.Member);
 
             return Result.Success();
         }
