@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using RealState.Contracts.ContactLead;
 using RealState.Contracts.Property;
 using RealState.Entities;
 using RealState.Entities.PropertForRent;
@@ -16,7 +17,13 @@ namespace RealState.Mapping
             config.NewConfig<PropertForRent, PropertyForRentResponse>().Ignore(dest => dest.Images);
 
 
-           
+
+            config.NewConfig<ContactLeads, ContactLeadResponse>()
+                .Map(dest => dest.EmployeeName,
+                     src => src.ApplicationUser == null
+                         ? string.Empty
+                         : $"{src.ApplicationUser.FirstName} {src.ApplicationUser.LastName}");
+
 
         }
     }

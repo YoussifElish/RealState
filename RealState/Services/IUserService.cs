@@ -16,5 +16,6 @@ namespace RealState.Services
         Task<Result> UnlockAsync(string id, CancellationToken cancellationToken = default);
         Task<Result> AddRoleToUserAsync(string userId, string roleName, CancellationToken cancellationToken = default);
         Task<IEnumerable<UserResponse>> GetAllEmployeesAsync(CancellationToken cancellationToken = default);
+        Task<Result> RemoveRoleToUserAsync(string userId, string roleName, CancellationToken cancellationToken = default);
     }
 }

@@ -62,6 +62,12 @@ namespace RealState.Controllers
             return result.IsSuccess ? NoContent() : result.ToProblem();
         }
 
-
+        [HttpPost("remove-role")]
+        [Authorize(Roles = DefaultRoles.Admin)]
+        public async Task<IActionResult> RemovedRoleToUser([FromBody] AddRoleToUserRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _userService.RemoveRoleToUserAsync(request.UserId, request.RoleName, cancellationToken);
+            return result.IsSuccess ? NoContent() : result.ToProblem();
+        }
     }
 }

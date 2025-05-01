@@ -67,14 +67,13 @@ public class ContactLeadService(ApplicationDbContext context, IHttpContextAccess
 
         if (!userRoles.Contains(DefaultRoles.Admin))
         {
-            query = query.Where(c => c.ApplicationUserId == userId);
+            query = query.Where(c => c.ApplicationUserId == userId && !c.IsDone);
         }
 
         var leads = await query.ToListAsync(cancellationToken);
 
         var response = leads.Adapt<List<ContactLeadResponse>>();
 
-        
 
         return Result.Success(response);
     }

@@ -11,7 +11,7 @@ namespace RealState.Controllers
     [Route("[controller]")]
     [ApiController]
     public class ContactLeadController(IContactLeadService _contactLeadService) : ControllerBase
-    {
+    {   
 
 
         [HttpPost("Add")]
