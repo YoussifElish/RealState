@@ -26,7 +26,7 @@ namespace CureFusion.Persistence.EntitiesConfiguration
                     Name = DefaultRoles.Member,
                     NormalizedName = DefaultRoles.Member.ToUpper(),
                     ConcurrencyStamp = DefaultRoles.MemberRoleConcurrenyStamp,
-                    IsDefault = true
+                    IsDefault = false
                 },
                 new ApplicationRole
                 {

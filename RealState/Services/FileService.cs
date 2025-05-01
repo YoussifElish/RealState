@@ -12,18 +12,16 @@ public class FileService(IWebHostEnvironment webHostEnvironment, ApplicationDbCo
 
    
 
-    public async Task<IEnumerable<Guid>> UploadManyAsync(IFormFileCollection images, int propertyId,string propertyType,string Description ,CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Guid>> UploadManyAsync(IFormFile images, int propertyId,string propertyType,string Description ,CancellationToken cancellationToken = default)
     {
         List<UploadedFile> uploadedFiles = [];
 
-        foreach (var image in images)
-        {
-            var uploadedFile = await UploadImageAsync(image, cancellationToken);
+            var uploadedFile = await UploadImageAsync(images, cancellationToken);
             uploadedFile.PropertyType = propertyType;
             uploadedFile.PropertyId = propertyId;
             uploadedFile.Description = Description;
             uploadedFiles.Add(uploadedFile);
-        }
+        
 
         await _context.AddRangeAsync(uploadedFiles, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);

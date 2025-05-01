@@ -32,22 +32,22 @@ public class LaunchService(ApplicationDbContext context,IFileService fileService
 
         launchResponse.BannerImages = allImages
             .Where(f => f.PropertyType == "Launch-Banner")
-            .Select(f => Path.Combine("/uploads", f.StoredFileName))
+.Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
             .ToList();
 
         launchResponse.MasterPlanImages = allImages
             .Where(f => f.PropertyType == "Launch-MasterPlan")
-            .Select(f => Path.Combine("/uploads", f.StoredFileName))
+.Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
             .ToList();
 
         launchResponse.LocationImages = allImages
             .Where(f => f.PropertyType == "Launch-Location")
-            .Select(f => Path.Combine("/uploads", f.StoredFileName))
+.Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
             .ToList();
 
         launchResponse.PaymentPlanImages = allImages
             .Where(f => f.PropertyType == "Launch-PaymentPlan")
-            .Select(f => Path.Combine("/uploads", f.StoredFileName))
+.Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
             .ToList();
 
         return Result.Success(launchResponse);
@@ -75,22 +75,22 @@ public class LaunchService(ApplicationDbContext context,IFileService fileService
 
             launchResponse.BannerImages = allImages
                 .Where(f => f.Description == "Banner" && f.PropertyType == "Launch")
-                .Select(f => Path.Combine("/uploads", f.StoredFileName))
+    .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                 .ToList();
 
             launchResponse.MasterPlanImages = allImages
                 .Where(f => f.Description == "MasterPlan" && f.PropertyType == "Launch")
-                .Select(f => Path.Combine("/uploads", f.StoredFileName))
+    .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                 .ToList();
 
             launchResponse.LocationImages = allImages
                 .Where(f => f.Description == "Location" && f.PropertyType == "Launch")
-                .Select(f => Path.Combine("/uploads", f.StoredFileName))
+    .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                 .ToList();
 
             launchResponse.PaymentPlanImages = allImages
                 .Where(f => f.Description == "PaymentPlan" && f.PropertyType == "Launch")
-                .Select(f => Path.Combine("/uploads", f.StoredFileName))
+    .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                 .ToList();
 
             return Result.Success(launchResponse);
@@ -114,22 +114,22 @@ public class LaunchService(ApplicationDbContext context,IFileService fileService
 
             launch.BannerImages = allImages
                 .Where(f => f.Description == "Banner" && f.PropertyType == "Launch")
-                .Select(f => Path.Combine("/uploads", f.StoredFileName))
+    .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                 .ToList();
 
             launch.MasterPlanImages = allImages
                 .Where(f => f.Description == "MasterPlan" && f.PropertyType == "Launch")
-                .Select(f => Path.Combine("/uploads", f.StoredFileName))
+    .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                 .ToList();
 
             launch.LocationImages = allImages
                 .Where(f => f.Description == "Location" && f.PropertyType == "Launch")
-                .Select(f => Path.Combine("/uploads", f.StoredFileName))
+    .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                 .ToList();
 
             launch.PaymentPlanImages = allImages
                 .Where(f => f.Description == "PaymentPlan" && f.PropertyType == "Launch")
-                .Select(f => Path.Combine("/uploads", f.StoredFileName))
+    .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                 .ToList();
 
             var properties = await _context.propertForSells
@@ -142,7 +142,7 @@ public class LaunchService(ApplicationDbContext context,IFileService fileService
             {
                 var propImages = await _context.uploadedFiles
                     .Where(f => f.PropertyId == property.Id && f.PropertyType == "Sell")
-                    .Select(f => Path.Combine("/uploads", f.StoredFileName))
+        .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                     .ToListAsync();
 
                 var propertyResponse = property.Adapt<PropertyForSellResponse>();
@@ -176,22 +176,22 @@ public class LaunchService(ApplicationDbContext context,IFileService fileService
 
         launchResponse.BannerImages = allImages
             .Where(f => f.Description == "Banner" && f.PropertyType == "Launch")
-            .Select(f => Path.Combine("/uploads", f.StoredFileName))
+.Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
             .ToList();
 
         launchResponse.MasterPlanImages = allImages
             .Where(f => f.Description == "MasterPlan" && f.PropertyType == "Launch")
-            .Select(f => Path.Combine("/uploads", f.StoredFileName))
+.Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
             .ToList();
 
         launchResponse.LocationImages = allImages
             .Where(f => f.Description == "Location" && f.PropertyType == "Launch")
-            .Select(f => Path.Combine("/uploads", f.StoredFileName))
+.Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
             .ToList();
 
         launchResponse.PaymentPlanImages = allImages
             .Where(f => f.Description == "PaymentPlan" && f.PropertyType == "Launch")
-            .Select(f => Path.Combine("/uploads", f.StoredFileName))
+.Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
             .ToList();
 
         var properties = await _context.propertForSells
@@ -204,7 +204,7 @@ public class LaunchService(ApplicationDbContext context,IFileService fileService
         {
             var propImages = await _context.uploadedFiles
                 .Where(f => f.PropertyId == property.Id && f.PropertyType == "Sell")
-                .Select(f => Path.Combine("/uploads", f.StoredFileName))
+    .Select(f => $"https://househub.runasp.net/uploads/{f.StoredFileName}")
                 .ToListAsync();
 
             var propertyResponse = property.Adapt<PropertyForSellResponse>();

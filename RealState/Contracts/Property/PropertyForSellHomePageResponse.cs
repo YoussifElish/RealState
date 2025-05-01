@@ -9,5 +9,6 @@ public class PropertyForSellHomePageResponse
         public string Location { get; set; }
         public List<string> Images { get; set; }
     public string ContactNumber { get; set; }
+    public  int NumberOfRooms { get; set; }
 
 }

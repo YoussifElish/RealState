@@ -20,7 +20,7 @@ namespace RealState.Controllers
             _launchService = launchService;
         }
 
-        [Authorize(Roles = DefaultRoles.Admin)]
+        //[Authorize(Roles = DefaultRoles.Admin)]
         [HttpPost("Add")]
         public async Task<IActionResult> AddLaunch([FromForm] LaunchRequest request, [FromForm] LaunchUploadImageRequest uploadImageRequest)
         {
@@ -28,7 +28,7 @@ namespace RealState.Controllers
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
 
-        [Authorize(Roles = DefaultRoles.Admin)]
+        //[Authorize(Roles = DefaultRoles.Admin)]
         [HttpPut("Edit/{id}")]
         public async Task<IActionResult> EditLaunch(int id, [FromForm] LaunchRequest request)
         {
@@ -36,7 +36,7 @@ namespace RealState.Controllers
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
 
-        [Authorize(Roles = DefaultRoles.Admin)]
+        //[Authorize(Roles = DefaultRoles.Admin)]
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteLaunch(int id)
         {
@@ -44,7 +44,6 @@ namespace RealState.Controllers
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
 
-        [Authorize(Roles = DefaultRoles.Admin)]
         [HttpGet("Get/{id}")]
         public async Task<IActionResult> GetLaunch(int id)
         {
@@ -52,7 +51,6 @@ namespace RealState.Controllers
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
 
-        [Authorize(Roles = DefaultRoles.Admin)]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAllLaunches()
         {

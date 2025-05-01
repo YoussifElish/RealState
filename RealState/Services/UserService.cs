@@ -51,7 +51,6 @@ namespace RealState.Services
                    on u.Id equals ur.UserId
                    join r in _context.Roles
                    on ur.RoleId equals r.Id into roles
-                   where !roles.Any(x => x.Name == DefaultRoles.Member)
                    select new
                    {
                        u.Id,
@@ -71,7 +70,32 @@ namespace RealState.Services
                        ))
                      .ToListAsync(cancellationToken);
 
-
+        public async Task<IEnumerable<UserResponse>> GetAllEmployeesAsync(CancellationToken cancellationToken = default) =>
+        await (from u in _context.Users
+               join ur in _context.UserRoles
+               on u.Id equals ur.UserId
+               join r in _context.Roles
+               on ur.RoleId equals r.Id into roles
+               where roles.Any(x => x.Name == DefaultRoles.Employee)
+               select new
+               {
+                   u.Id,
+                   u.FirstName,
+                   u.LastName,
+                   u.Email,
+                   u.IsDisabled,
+                   Roles = roles.Select(x => x.Name!).ToList()
+               }
+               
+               ).GroupBy(u => new { u.Id, u.FirstName, u.LastName, u.Email, u.IsDisabled }).Select(u => new UserResponse(
+                   u.Key.Id,
+                   u.Key.FirstName,
+                   u.Key.LastName,
+                   u.Key.Email,
+                   u.Key.IsDisabled,
+                   u.SelectMany(x => x.Roles)
+                   ))
+                 .ToListAsync(cancellationToken);
 
 
         public async Task<Result<UserResponse>> GetAsync(string id, CancellationToken cancellationToken = default)

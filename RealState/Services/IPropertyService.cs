@@ -16,4 +16,6 @@ public interface IPropertyService
     Task<Result<List<PropertyForSellHomePageResponse>>> GetAllPropertiesForRent();
     Task<Result<PropertyForSellResponse>> EditPropertyForSell(int id, PropertyForSellRequest propertyDto, UploadImageRequest uploadImageRequest);
     Task<Result<PropertyForRentResponse>> EditPropertyForRent(int id, PropertyForRentRequest propertyDto, UploadImageRequest uploadImageRequest);
+
+    Task<Result<List<PropertyForSellHomePageResponse>>> SearchProperties(PropertySearchRequest searchRequest);
 }

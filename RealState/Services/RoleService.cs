@@ -7,6 +7,7 @@ using RealState.Contracts.Roles;
 using RealState.Entities;
 using RealState.Errors;
 using RealState.Persistence;
+using RealState.Services;
 
 namespace SurveyBasket.Services
 {

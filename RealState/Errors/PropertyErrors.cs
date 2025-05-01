@@ -28,4 +28,7 @@ public static class PropertyErrors
         StatusCodes.Status400BadRequest
     );
 
+    public static readonly Error InvalidPropertyType =
+        new("Property.InvalidType", "Property type must be either 'Sell' or 'Rent'",StatusCodes.Status400BadRequest);
+
 }

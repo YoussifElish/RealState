@@ -28,7 +28,7 @@ public class ContactLeadService(ApplicationDbContext context, IHttpContextAccess
     public async Task<Result<ContactLeadResponse>> AssignToEmployee(int id, string employeeId, CancellationToken cancellationToken = default)
     {
 
-        var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = "5ae19dda-c512-44e1-8686-209c0e921a49";
 
         var user = await _userManager.FindByIdAsync(userId);
         var userRoles = await _userManager.GetRolesAsync(user);
@@ -55,7 +55,7 @@ public class ContactLeadService(ApplicationDbContext context, IHttpContextAccess
 
     public async Task<Result<List<ContactLeadResponse>>> GetAllContactLead(CancellationToken cancellationToken = default)
     {
-        var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = "5ae19dda-c512-44e1-8686-209c0e921a49";
 
 
         var user = await _userManager.FindByIdAsync(userId);
@@ -74,19 +74,14 @@ public class ContactLeadService(ApplicationDbContext context, IHttpContextAccess
 
         var response = leads.Adapt<List<ContactLeadResponse>>();
 
-        for (int i = 0; i < leads.Count; i++)
-        {
-            response[i].Name = leads[i].ApplicationUser is not null
-                ? $"{leads[i].ApplicationUser.FirstName} {leads[i].ApplicationUser.LastName}"
-                : null;
-        }
+        
 
         return Result.Success(response);
     }
 
     public async Task<Result<ContactLeadResponse>> GetContactLead(int id, CancellationToken cancellationToken = default)
     {
-        var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = "5ae19dda-c512-44e1-8686-209c0e921a49";
 
         var user = await _userManager.FindByIdAsync(userId);
    
@@ -128,7 +123,7 @@ public class ContactLeadService(ApplicationDbContext context, IHttpContextAccess
         if (lead is null)
             return Result.Failure<ContactLeadResponse>(LeadErrors.LeadNotFound);
 
-        var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = "5ae19dda-c512-44e1-8686-209c0e921a49";
 
         var user = await _userManager.FindByIdAsync(userId);
         if (lead.ApplicationUserId != userId)

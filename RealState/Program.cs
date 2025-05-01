@@ -15,6 +15,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDependencies(builder.Configuration);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
@@ -50,10 +59,17 @@ app.UseHangfireDashboard("/jobs", new DashboardOptions
         })
     }
 });
-
+app.UseCors("AllowAll");
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+    }
+});
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-app.UseStaticFiles();
+
 
 app.Run();
