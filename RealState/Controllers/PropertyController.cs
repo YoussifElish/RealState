@@ -17,7 +17,7 @@ namespace RealState.Controllers
       
 
         [HttpPost("AddSell")]
-        //[Authorize(Roles = DefaultRoles.Admin)]
+        [Authorize(Roles = DefaultRoles.Admin)]
         public async Task<IActionResult> AddPropertyForSell([FromForm] PropertyForSellRequest request, [FromForm] UploadImageRequest uploadImageRequest)
         {
             var result = await _propertyService.AddPropertyForSell(request, uploadImageRequest);
@@ -25,8 +25,7 @@ namespace RealState.Controllers
         }
 
         [HttpPost("AddRent")]
-        //[Authorize(Roles = DefaultRoles.Admin)]
-
+        [Authorize(Roles = DefaultRoles.Admin)]
         public async Task<IActionResult> AddPropertyForRent([FromForm] PropertyForRentRequest request, [FromForm] UploadImageRequest uploadImageRequest)
         {
             var result = await _propertyService.AddPropertyForRent(request, uploadImageRequest);
@@ -34,16 +33,16 @@ namespace RealState.Controllers
         }
 
         [HttpDelete("DeleteSell/{id}")]
-        //[Authorize(Roles = DefaultRoles.Admin)]
-
+        [Authorize(Roles = DefaultRoles.Admin)]
         public async Task<IActionResult> DeletePropertyForSell(int id)
         {
             var result = await _propertyService.DeletePropertyForSell(id);
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
-        //[Authorize(Roles = DefaultRoles.Admin)]
 
         [HttpDelete("DeleteRent/{id}")]
+        [Authorize(Roles = DefaultRoles.Admin)]
+
         public async Task<IActionResult> DeletePropertyForRent(int id)
         {
             var result = await _propertyService.DeletePropertyForRent(id);
@@ -51,7 +50,7 @@ namespace RealState.Controllers
         }
 
         [HttpPut("EditSell/{id}")]
-        //[Authorize(Roles = DefaultRoles.Admin)]
+        [Authorize(Roles = DefaultRoles.Admin)]
 
         public async Task<IActionResult> EditPropertyForSell(int id, [FromForm] PropertyForSellRequest request, [FromForm] UploadImageRequest uploadImageRequest)
         {
@@ -59,7 +58,7 @@ namespace RealState.Controllers
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
         [HttpPut("EditRent/{id}")]
-        //[Authorize(Roles = DefaultRoles.Admin)]
+        [Authorize(Roles = DefaultRoles.Admin)]
 
         public async Task<IActionResult> EditPropertyForRent(int id, [FromForm] PropertyForRentRequest request, [FromForm] UploadImageRequest uploadImageRequest)
         {

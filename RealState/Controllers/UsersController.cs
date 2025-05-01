@@ -16,7 +16,8 @@ namespace RealState.Controllers
         private readonly IUserService _userService = userService;
 
         [HttpGet("")]
-    
+
+        [Authorize(Roles = DefaultRoles.Admin)]
 
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
@@ -24,6 +25,7 @@ namespace RealState.Controllers
             return Ok(await _userService.GetAllAsync(cancellationToken));
         }
         [HttpGet("GetAllEmployees")]
+        [Authorize(Roles = DefaultRoles.Admin)]
 
         public async Task<IActionResult> GetAllEmployees(CancellationToken cancellationToken)
         {
@@ -33,7 +35,7 @@ namespace RealState.Controllers
 
 
         [HttpGet("{id}")]
-        //[Authorize(Roles = DefaultRoles.Admin)]
+        [Authorize(Roles = DefaultRoles.Admin)]
         public async Task<IActionResult> Get([FromRoute] string id, CancellationToken cancellationToken)
         {
 
@@ -44,7 +46,7 @@ namespace RealState.Controllers
 
 
         [HttpPut("{id}/toggle-status")]
-        //[Authorize(Roles = DefaultRoles.Admin)]
+        [Authorize(Roles = DefaultRoles.Admin)]
         public async Task<IActionResult> Toggle(string id, CancellationToken cancellationToken)
         {
 
@@ -53,7 +55,7 @@ namespace RealState.Controllers
         }
 
         [HttpPost("add-role")]
-        //[Authorize(Roles = DefaultRoles.Admin)]
+        [Authorize(Roles = DefaultRoles.Admin)]
         public async Task<IActionResult> AddRoleToUser([FromBody] AddRoleToUserRequest request, CancellationToken cancellationToken)
         {
             var result = await _userService.AddRoleToUserAsync(request.UserId, request.RoleName, cancellationToken);

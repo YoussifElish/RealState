@@ -20,21 +20,21 @@ namespace RealState.Controllers
             var result = await _contactLeadService.AddContactLead(request);
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
-        //[Authorize(Roles = DefaultRoles.Admin)]
+        [Authorize(Roles = DefaultRoles.Admin)]
         [HttpPost("Assign")]
         public async Task<IActionResult> AssignToEmployee([FromQuery] int id, [FromQuery] string employeeId)
         {
             var result = await _contactLeadService.AssignToEmployee(id, employeeId);
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
-        //[Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.Employee}")]
+        [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.Employee}")]
         [HttpGet("All")]
         public async Task<IActionResult> GetAllContactLead()
         {
             var result = await _contactLeadService.GetAllContactLead();
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
-        //[Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.Employee}")]
+        [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.Employee}")]
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContactLead(int id)
@@ -42,7 +42,7 @@ namespace RealState.Controllers
             var result = await _contactLeadService.GetContactLead(id);
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
-        //[Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.Employee}")]
+        [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.Employee}")]
 
         [HttpPut("MarkAsDone/{id}")]
         public async Task<IActionResult> MarkAsDone(int id)
