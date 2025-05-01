@@ -229,20 +229,70 @@ public class LaunchService(ApplicationDbContext context,IFileService fileService
             return Result.Failure(LaunchErrors.LaunchNotFound);
         }
 
-        var files = await _context.uploadedFiles
+        var launchFiles = await _context.uploadedFiles
             .Where(f => f.PropertyId == launch.Id && f.PropertyType.StartsWith("Launch"))
             .ToListAsync();
 
-        foreach (var file in files)
+        if (launchFiles.Any())
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", file.StoredFileName);
-            if (System.IO.File.Exists(filePath))
+            foreach (var file in launchFiles)
             {
-                System.IO.File.Delete(filePath);
+                try
+                {
+                    if (!string.IsNullOrEmpty(file.StoredFileName))
+                    {
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", file.StoredFileName);
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+                    }
+                }
+                catch
+                {
+                    
+                }
             }
+
+            _context.uploadedFiles.RemoveRange(launchFiles);
         }
 
-        _context.uploadedFiles.RemoveRange(files);
+        // حذف الخصائص المرتبطة بالـ Launch
+        var properties = await _context.propertForSells
+            .Where(p => p.LaunchId == launch.Id)
+            .ToListAsync();
+
+        foreach (var property in properties)
+        {
+            var propertyFiles = await _context.uploadedFiles
+                .Where(f => f.PropertyId == property.Id && f.PropertyType.StartsWith("Sell"))
+                .ToListAsync();
+
+            if (propertyFiles.Any())
+            {
+                foreach (var file in propertyFiles)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(file.StoredFileName))
+                        {
+                            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", file.StoredFileName);
+                            if (System.IO.File.Exists(filePath))
+                            {
+                                System.IO.File.Delete(filePath);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                _context.uploadedFiles.RemoveRange(propertyFiles);
+            }
+
+            _context.propertForSells.Remove(property);
+        }
 
         _context.launches.Remove(launch);
 
@@ -252,5 +302,6 @@ public class LaunchService(ApplicationDbContext context,IFileService fileService
             ? Result.Success()
             : Result.Failure(LaunchErrors.FailedToAddLaunch);
     }
+
 
 }
